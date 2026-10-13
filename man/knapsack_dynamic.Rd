@@ -4,13 +4,15 @@
 \alias{knapsack_dynamic}
 \title{Dynamic programming solution to the knapsack problem}
 \usage{
-knapsack_dynamic(x, W)
+knapsack_dynamic(x, W, fast = FALSE)
 }
 \arguments{
 \item{x}{A data.frame with two numeric columns: weights (must
 be whole numbers) and values.}
 
 \item{W}{A single positive number, the capacity of the knapsack.}
+
+\item{fast}{Logical. If TRUE, uses a faster C++ implementation (via Rcpp)}
 }
 \value{
 A list with two elements:

@@ -1,19 +1,20 @@
 #' Dynamic programming solution to the knapsack problem
 #'
 #' Build a table of the best achievable value for every number of items
-#' and every integer capacity from 0 to W. 
+#' and every integer capacity from 0 to W.
 #' Requires integer weights. The complexity is O(Wn).
 #'
 #' @param x A data.frame with two numeric columns: weights (must
-#'   be whole numbers) and values. 
+#'   be whole numbers) and values.
 #' @param W A single positive number, the capacity of the knapsack.
+#' @param fast Logical. If TRUE, uses a faster C++ implementation (via Rcpp)
 #'
 #' @return A list with two elements:
 #'   \item{value}{The maximum total value of items that fit in the knapsack.}
 #'   \item{elements}{The row numbers of \code{x} of the chosen items.}
 #'
 #' @export
-knapsack_dynamic <- function(x, W) {
+knapsack_dynamic <- function(x, W, fast = FALSE) {
   if (!is.data.frame(x)) {
     stop("x must be a data.frame")
   }
@@ -23,20 +24,25 @@ knapsack_dynamic <- function(x, W) {
   if (!is.numeric(W) || length(W) != 1 || is.na(W) || W <= 0) {
     stop("W must be a single positive number")
   }
-  
+
   n <- nrow(x)
   if (n == 0) {
     return(list(value = 0, elements = integer(0)))
   }
-  
+
   w <- x$w
   v <- x$v
-  
+
+  if (fast) {
+    res <- knapsack_dynamic_cpp(as.integer(w), v, as.integer(W))
+    return(list(value = round(res$value), elements = res$elements))
+  }
+
   # ---- Fill the table ----
   # Row 1 (0 items) and column 1 (0 capacity) stay 0.
   # Row i + 1 = using the first i items, column j + 1 = capacity j.
   m <- matrix(0, nrow = n + 1, ncol = W + 1)
-  
+
   for (i in 1:n) {
     for (j in 0:W) {
       if (w[i] > j) {
@@ -49,7 +55,7 @@ knapsack_dynamic <- function(x, W) {
       }
     }
   }
-  
+
   elements <- integer(0)
   j <- W
   for (i in n:1) {
@@ -59,6 +65,6 @@ knapsack_dynamic <- function(x, W) {
       j <- j - w[i]
     }
   }
-  
+
   list(value = round(m[n + 1, W + 1]), elements = elements)
 }
