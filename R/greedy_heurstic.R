@@ -45,6 +45,15 @@ greedy_knapsack <- function(x,W){
   list(value = round(total_v), elements = elements)
 }
 
+### optimized version
+
+greedy_knapsack_optimized <- function(x, W) {
+  ratio <- x$v / x$w
+  ord   <- order(ratio, decreasing = TRUE)
+  keep  <- ord[cumsum(x$w[ord]) <= W]
+  list(value = round(sum(x$v[keep])), elements = keep)
+}
+
 #debug(greedy_knapsack)
 #greedy_knapsack(x = knapsack_objects[1:800,], W = 3500)
 #greedy_knapsack(x = knapsack_objects[1:1200,], W = 2000)
