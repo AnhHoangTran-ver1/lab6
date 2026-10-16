@@ -24,12 +24,7 @@
 
 greedy_knapsack <- function(x,W){
   stopifnot(is.data.frame(x), is.numeric(W), length(W) == 1, W > 0,!anyNA(x), all(x > 0))
-  ordered_list <- list()
-  #for(i in 1:nrow(x)){
-  #  ordered_list[i] <- x[[2]][i]/x[[1]][i]
-  #}
-  #ordered_list <- unlist(ordered_list)
-  #return(sort(unlist(ordered_list), decreasing = TRUE))
+  #ordered_list <- list()
   ord <- order(x$v / x$w, decreasing = TRUE)
 
   total_w <- 0
@@ -48,6 +43,8 @@ greedy_knapsack <- function(x,W){
 ### optimized version
 
 greedy_knapsack_optimized <- function(x, W) {
+  stopifnot(is.data.frame(x), is.numeric(W), length(W) == 1, W > 0,!anyNA(x), all(x > 0))
+
   ratio <- x$v / x$w
   ord   <- order(ratio, decreasing = TRUE)
   keep  <- ord[cumsum(x$w[ord]) <= W]

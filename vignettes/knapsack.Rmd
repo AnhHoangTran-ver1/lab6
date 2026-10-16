@@ -24,12 +24,12 @@ knapsack_objects <- data.frame(
   w = sample(1:4000, size = n, replace = TRUE),
   v = runif(n = n, 0, 10000)
 )
-
 ```
 
 ## Introduction
 
-The knapsack problem is where you choose a subset of items to maximize total value without exceeding a fixed weight capacity
+The knapsack problem is where you choose a subset of items to maximize total
+value without exceeding a fixed weight capacity.
 
 ## Brute force search
 
@@ -41,6 +41,11 @@ brute_force_knapsack(knapsack_objects[1:12, ], W = 3500)
 system.time(brute_force_knapsack(knapsack_objects[1:16, ], W = 3500))
 ```
 
+**Question: How much time does it take to run the algorithm for n = 16 objects?**
+
+About 0.08 seconds (elapsed). The complexity is O(2^n), so each extra object
+doubles the work.
+
 ## Dynamic programming
 
 ```{r}
@@ -50,6 +55,11 @@ knapsack_dynamic(knapsack_objects[1:500, ], W = 3500)
 ```{r}
 system.time(knapsack_dynamic(knapsack_objects[1:500, ], W = 3500))
 ```
+
+**Question: How much time does it take to run the algorithm for n = 500 objects?**
+
+About 0.30 seconds. The complexity is O(W·n), so it grows linearly in n and in W.
+It scales far better than brute force.
 
 ## Greedy heuristic
 
@@ -64,6 +74,11 @@ big <- data.frame(w = sample(1:4000, n, replace = TRUE),
                   v = runif(n, 0, 10000))
 system.time(greedy_knapsack(big, W = 3500))
 ```
+
+**Question: How much time does it take to run the algorithm for n = 1,000,000 objects?**
+
+About 0.04 seconds. The complexity is O(n log n), dominated by sorting on the
+value/weight ratio. The trade-off is it comsumes less memory.
 
 ## Profiling and optimization
 
@@ -81,6 +96,26 @@ items with `bench::mark()`:
 | Original  | 32.2 ms     | 36.4 MB          | 2   |
 | Optimized | 26.3 ms     | 26.7 MB          | 1   |
 
-The optimized version is about 1.2 times faster and allocates about 27%
-less memory.
+**Question: What performance gain could you get by trying to improve your code?**
+
+The optimized version is about 1.2 times faster and allocates about 27% less
+memory.
+
+## Rcpp
+
+Implementation in C++ with Rcpp
+`fast = TRUE` (default `FALSE`).
+
+```{r rcpp-bench, eval = FALSE}
+bench::mark(
+  r    = YOUR_FUNCTION(knapsack_objects[1:500, ], W = 3500, fast = FALSE),
+  rcpp = YOUR_FUNCTION(knapsack_objects[1:500, ], W = 3500, fast = TRUE),
+  iterations = 20
+)
+```
+
+**Question: What performance gain could you get by using Rcpp and C++?**
+
+The loops run as compiled code instead of interpreted R. Both versions return
+identical results.
 
