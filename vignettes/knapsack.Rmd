@@ -108,8 +108,8 @@ Implementation in C++ with Rcpp
 
 ```{r rcpp-bench, eval = FALSE}
 bench::mark(
-  r    = YOUR_FUNCTION(knapsack_objects[1:500, ], W = 3500, fast = FALSE),
-  rcpp = YOUR_FUNCTION(knapsack_objects[1:500, ], W = 3500, fast = TRUE),
+  r    = knapsack_dynamic(knapsack_objects[1:500, ], W = 3500, fast = FALSE),
+  rcpp = knapsack_dynamic(knapsack_objects[1:500, ], W = 3500, fast = TRUE),
   iterations = 20
 )
 ```

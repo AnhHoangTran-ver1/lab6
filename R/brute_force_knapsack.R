@@ -4,7 +4,7 @@
 #' where a bit equal to 1 means the corresponding item is included. The complexity
 #' is O(2^n) => feasible for a small number of items only
 #'
-#' @param x A data.frame with two numeric columns: weights and values. All weights and values must be positive.
+#' @param x A data.frame with numeric columns w (weight) and v (value), all positive and non-missing.
 #' @param W A single positive number, the capacity of the knapsack.
 #'
 #' @return A list with two elements:
@@ -15,6 +15,10 @@
 brute_force_knapsack <- function(x, W) {
   if (!is.data.frame(x)) {
     stop("x must be a data.frame")
+  }
+  if (!all(c("w", "v") %in% names(x)) || !is.numeric(x$w) || !is.numeric(x$v) ||
+      anyNA(x$w) || anyNA(x$v) || any(x$w <= 0) || any(x$v <= 0)) {
+    stop("x must have numeric columns 'w' and 'v' with positive, non-missing values")
   }
   if (!is.numeric(W) || length(W) != 1 || is.na(W) || W <= 0) {
     stop("W must be a single positive number")
