@@ -106,16 +106,20 @@ memory.
 Implementation in C++ with Rcpp
 `fast = TRUE` (default `FALSE`).
 
-```{r rcpp-bench, eval = FALSE}
-bench::mark(
+```{r rcpp-bench}
+res <- bench::mark(
   r    = knapsack_dynamic(knapsack_objects[1:500, ], W = 3500, fast = FALSE),
   rcpp = knapsack_dynamic(knapsack_objects[1:500, ], W = 3500, fast = TRUE),
   iterations = 20
 )
+res
+t_r   <- as.numeric(res$median[1]) * 1000  # ms
+t_cpp <- as.numeric(res$median[2]) * 1000  # ms
 ```
 
 **Question: What performance gain could you get by using Rcpp and C++?**
 
-The loops run as compiled code instead of interpreted R. Both versions return
-identical results.
-
+The Rcpp version had a median time of `r round(t_cpp, 1)` ms versus
+`r round(t_r, 1)` ms for the R version, about `r round(t_r / t_cpp)` times
+faster. The loops run as compiled code instead of interpreted R. Both versions
+return identical results.
